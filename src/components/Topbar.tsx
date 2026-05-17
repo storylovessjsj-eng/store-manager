@@ -57,10 +57,9 @@ export default function Topbar() {
         )}
         {usesFilter && (
           <select className="tsel" value={year} onChange={(e) => setYear(parseInt(e.target.value))}>
-            <option value={2024}>2024</option>
-            <option value={2025}>2025</option>
-            <option value={2026}>2026</option>
-            <option value={2027}>2027</option>
+            {Array.from({ length: 11 }, (_, i) => 2020 + i).map((y) => (
+              <option key={y} value={y}>{y}</option>
+            ))}
           </select>
         )}
       </div>

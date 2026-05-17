@@ -31,8 +31,8 @@ export default function ChartsPage() {
     return { label: MONTHS[m], inc, exp, profit: inc - exp };
   });
 
-  const yearly = Array.from({ length: 5 }, (_, idx) => {
-    const yr = y - 4 + idx;
+  const yearly = Array.from({ length: 6 }, (_, idx) => {
+    const yr = y - 5 + idx;
     const inc = sales.filter((s) => new Date(s.date).getFullYear() === yr).reduce((a, x) => a + Number(x.total), 0);
     const exp = expenses.filter((e) => new Date(e.date).getFullYear() === yr).reduce((a, x) => a + Number(x.amount), 0);
     return { label: String(yr), inc, exp, profit: inc - exp };
@@ -69,7 +69,7 @@ export default function ChartsPage() {
           </BarChart>
         </ChartCard>
 
-        <ChartCard title="รายรับ-รายจ่าย รายปี" sub="5 ปีล่าสุด">
+        <ChartCard title="รายรับ-รายจ่าย รายปี" sub="6 ปีล่าสุด">
           <BarChart data={yearly} margin={{ top: 22, right: 5, left: -10, bottom: 0 }}>
             <XAxis dataKey="label" tick={{ fontSize: 10, fill: '#a0aec0', fontFamily: 'Kanit' }} axisLine={false} tickLine={false} />
             <YAxis tick={{ fontSize: 10, fill: '#a0aec0', fontFamily: 'Kanit' }} axisLine={false} tickLine={false} tickFormatter={(v) => '฿' + v.toLocaleString()} />
@@ -83,7 +83,7 @@ export default function ChartsPage() {
           </BarChart>
         </ChartCard>
 
-        <ChartCard title="กำไรสุทธิ รายปี" sub="5 ปีล่าสุด">
+        <ChartCard title="กำไรสุทธิ รายปี" sub="6 ปีล่าสุด">
           <BarChart data={yearly} margin={{ top: 22, right: 5, left: -10, bottom: 0 }}>
             <XAxis dataKey="label" tick={{ fontSize: 10, fill: '#a0aec0', fontFamily: 'Kanit' }} axisLine={false} tickLine={false} />
             <YAxis tick={{ fontSize: 10, fill: '#a0aec0', fontFamily: 'Kanit' }} axisLine={false} tickLine={false} tickFormatter={(v) => (v < 0 ? '-' : '') + '฿' + Math.abs(v).toLocaleString()} />
