@@ -7,6 +7,14 @@
 
 html, body { font-family: 'Kanit', sans-serif; }
 
+/* Dashboard: ลดความกว้างคอลัมน์ซ้ายลง 150px (ขยายคอลัมน์ขวาเป็น 420px) */
+.mid-row, .bot-row {
+  grid-template-columns: calc(100% - 420px) 420px !important;
+}
+@media (max-width: 900px) {
+  .mid-row, .bot-row { grid-template-columns: 1fr !important; }
+}
+
 /* ── Mobile drawer overrides ── */
 .mobile-menu-btn {
   display: none;
