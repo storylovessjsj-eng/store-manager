@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { Expense, EXPENSE_CATEGORIES, formatTHB, todayISO } from '@/lib/types';
+import { emojiFor } from '@/components/CategoryIcon';
 
 export default function ExpensesPage() {
   const [expenses, setExpenses] = useState<Expense[]>([]);
@@ -37,7 +38,7 @@ export default function ExpensesPage() {
           <div><label>จำนวนเงิน (฿)</label><input type="number" min="0" placeholder="0" value={form.amount} onChange={(e) => setForm({ ...form, amount: e.target.value })} /></div>
           <div><label>หมวด</label>
             <select value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })}>
-              {EXPENSE_CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
+              {EXPENSE_CATEGORIES.map((c) => <option key={c} value={c}>{emojiFor(c)} {c}</option>)}
             </select>
           </div>
           <div><label>คำอธิบาย</label><input placeholder="รายละเอียด" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} /></div>

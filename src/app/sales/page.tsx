@@ -4,7 +4,7 @@ import { supabase } from '@/lib/supabase';
 import { INCOME_CATEGORIES, EXPENSE_CATEGORIES, formatTHB, todayISO } from '@/lib/types';
 import { useFilter } from '@/components/FilterContext';
 import { useRealtimeRefresh } from '@/lib/useRealtimeRefresh';
-import { CategoryIcon, cleanCategoryLabel } from '@/components/CategoryIcon';
+import { CategoryIcon, cleanCategoryLabel, emojiFor } from '@/components/CategoryIcon';
 
 type Entry = {
   id: string;
@@ -166,7 +166,7 @@ export default function RecordPage() {
           <div>
             <label>หมวดหมู่</label>
             <select value={cat} onChange={(e) => setCat(e.target.value)}>
-              {cats.map((c) => <option key={c} value={c}>{c}</option>)}
+              {cats.map((c) => <option key={c} value={c}>{emojiFor(c)} {c}</option>)}
             </select>
           </div>
           <div>
