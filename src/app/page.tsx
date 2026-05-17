@@ -107,7 +107,7 @@ export default function Dashboard() {
               <BarChart data={chartData} margin={{ top: 22, right: 5, left: -10, bottom: 0 }}>
                 <XAxis dataKey="label" tick={{ fontSize: 10, fill: '#a0aec0', fontFamily: 'Kanit' }} axisLine={false} tickLine={false} />
                 <YAxis tick={{ fontSize: 10, fill: '#a0aec0', fontFamily: 'Kanit' }} axisLine={false} tickLine={false} tickFormatter={(v) => '฿' + v.toLocaleString()} />
-                <Tooltip formatter={(v) => formatTHB(Number(v))} contentStyle={{ fontSize: 11, borderRadius: 8, border: '1px solid #e8eaed', fontFamily: 'Kanit' }} />
+                <Tooltip cursor={false} formatter={(v) => formatTHB(Number(v))} contentStyle={{ fontSize: 11, borderRadius: 8, border: '1px solid #e8eaed', fontFamily: 'Kanit' }} />
                 <Bar dataKey="inc" name="รายรับ" fill="#1a2b45" radius={3}>
                   <LabelList dataKey="inc" position="top" fontSize={9} fill="#1a2b45" formatter={formatShort} />
                 </Bar>
@@ -128,7 +128,7 @@ export default function Dashboard() {
                   <Pie data={[{ name: 'รายรับ', value: tI || 0.1 }, { name: 'รายจ่าย', value: tE || 0.1 }]} dataKey="value" cx="50%" cy="50%" innerRadius={48} outerRadius={72} startAngle={90} endAngle={-270} stroke="none">
                     <Cell fill="#1a2b45" /><Cell fill="#f5a623" />
                   </Pie>
-                  <Tooltip formatter={(v) => formatTHB(Number(v))} contentStyle={{ fontSize: 11, borderRadius: 8, fontFamily: 'Kanit' }} />
+                  <Tooltip cursor={false} formatter={(v) => formatTHB(Number(v))} contentStyle={{ fontSize: 11, borderRadius: 8, fontFamily: 'Kanit' }} />
                 </PieChart>
               </ResponsiveContainer>
               <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', pointerEvents: 'none' }}>
@@ -148,7 +148,7 @@ export default function Dashboard() {
               <BarChart data={[{ label: 'รายรับ', v: tI }, { label: 'รายจ่าย', v: tE }]} margin={{ top: 22, right: 5, left: -15, bottom: 0 }}>
                 <XAxis dataKey="label" tick={{ fontSize: 10, fill: '#a0aec0', fontFamily: 'Kanit' }} axisLine={false} tickLine={false} />
                 <YAxis hide />
-                <Tooltip formatter={(v) => formatTHB(Number(v))} contentStyle={{ fontSize: 11, borderRadius: 8, fontFamily: 'Kanit' }} />
+                <Tooltip cursor={false} formatter={(v) => formatTHB(Number(v))} contentStyle={{ fontSize: 11, borderRadius: 8, fontFamily: 'Kanit' }} />
                 <Bar dataKey="v" radius={6}>
                   <Cell fill="#1a2b45" /><Cell fill="#f5a623" />
                   <LabelList dataKey="v" position="top" fontSize={9} fill="#1a2b45" formatter={formatShort} />

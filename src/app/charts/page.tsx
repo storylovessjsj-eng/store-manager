@@ -47,7 +47,7 @@ export default function ChartsPage() {
           <BarChart data={monthly} margin={{ top: 22, right: 5, left: -10, bottom: 0 }}>
             <XAxis dataKey="label" tick={{ fontSize: 10, fill: '#a0aec0', fontFamily: 'Kanit' }} axisLine={false} tickLine={false} />
             <YAxis tick={{ fontSize: 10, fill: '#a0aec0', fontFamily: 'Kanit' }} axisLine={false} tickLine={false} tickFormatter={(v) => '฿' + v.toLocaleString()} />
-            <Tooltip formatter={(v) => formatTHB(Number(v))} contentStyle={{ fontSize: 11, borderRadius: 8, fontFamily: 'Kanit' }} />
+            <Tooltip cursor={false} formatter={(v) => formatTHB(Number(v))} contentStyle={{ fontSize: 11, borderRadius: 8, fontFamily: 'Kanit' }} />
             <Bar dataKey="inc" name="รายรับ" fill="#1a2b45" radius={3}>
               <LabelList dataKey="inc" position="top" fontSize={9} fill="#1a2b45" formatter={formatShort} />
             </Bar>
@@ -61,7 +61,7 @@ export default function ChartsPage() {
           <BarChart data={monthly} margin={{ top: 22, right: 5, left: -10, bottom: 0 }}>
             <XAxis dataKey="label" tick={{ fontSize: 10, fill: '#a0aec0', fontFamily: 'Kanit' }} axisLine={false} tickLine={false} />
             <YAxis tick={{ fontSize: 10, fill: '#a0aec0', fontFamily: 'Kanit' }} axisLine={false} tickLine={false} tickFormatter={(v) => (v < 0 ? '-' : '') + '฿' + Math.abs(v).toLocaleString()} />
-            <Tooltip formatter={(v) => formatTHB(Number(v))} contentStyle={{ fontSize: 11, borderRadius: 8, fontFamily: 'Kanit' }} />
+            <Tooltip cursor={false} formatter={(v) => formatTHB(Number(v))} contentStyle={{ fontSize: 11, borderRadius: 8, fontFamily: 'Kanit' }} />
             <Bar dataKey="profit" radius={3}>
               {monthly.map((d, i) => <Cell key={i} fill={d.profit >= 0 ? '#1D9E75' : '#F09595'} />)}
               <LabelList dataKey="profit" position="top" fontSize={9} fill="#1a2b45" formatter={formatShort} />
@@ -73,7 +73,7 @@ export default function ChartsPage() {
           <BarChart data={yearly} margin={{ top: 22, right: 5, left: -10, bottom: 0 }}>
             <XAxis dataKey="label" tick={{ fontSize: 10, fill: '#a0aec0', fontFamily: 'Kanit' }} axisLine={false} tickLine={false} />
             <YAxis tick={{ fontSize: 10, fill: '#a0aec0', fontFamily: 'Kanit' }} axisLine={false} tickLine={false} tickFormatter={(v) => '฿' + v.toLocaleString()} />
-            <Tooltip formatter={(v) => formatTHB(Number(v))} contentStyle={{ fontSize: 11, borderRadius: 8, fontFamily: 'Kanit' }} />
+            <Tooltip cursor={false} formatter={(v) => formatTHB(Number(v))} contentStyle={{ fontSize: 11, borderRadius: 8, fontFamily: 'Kanit' }} />
             <Bar dataKey="inc" name="รายรับ" fill="#1a2b45" radius={4}>
               <LabelList dataKey="inc" position="top" fontSize={9} fill="#1a2b45" formatter={formatShort} />
             </Bar>
@@ -87,7 +87,7 @@ export default function ChartsPage() {
           <BarChart data={yearly} margin={{ top: 22, right: 5, left: -10, bottom: 0 }}>
             <XAxis dataKey="label" tick={{ fontSize: 10, fill: '#a0aec0', fontFamily: 'Kanit' }} axisLine={false} tickLine={false} />
             <YAxis tick={{ fontSize: 10, fill: '#a0aec0', fontFamily: 'Kanit' }} axisLine={false} tickLine={false} tickFormatter={(v) => (v < 0 ? '-' : '') + '฿' + Math.abs(v).toLocaleString()} />
-            <Tooltip formatter={(v) => formatTHB(Number(v))} contentStyle={{ fontSize: 11, borderRadius: 8, fontFamily: 'Kanit' }} />
+            <Tooltip cursor={false} formatter={(v) => formatTHB(Number(v))} contentStyle={{ fontSize: 11, borderRadius: 8, fontFamily: 'Kanit' }} />
             <Bar dataKey="profit" radius={4}>
               {yearly.map((d, i) => <Cell key={i} fill={d.profit >= 0 ? '#1D9E75' : '#F09595'} />)}
               <LabelList dataKey="profit" position="top" fontSize={9} fill="#1a2b45" formatter={formatShort} />
