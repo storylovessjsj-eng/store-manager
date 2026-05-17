@@ -6,8 +6,10 @@ import { useFilter } from '@/components/FilterContext';
 import { useRealtimeRefresh } from '@/lib/useRealtimeRefresh';
 import { CategoryIcon, cleanCategoryLabel } from '@/components/CategoryIcon';
 
+const MONTHS = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
+
 export default function ReportsPage() {
-  const { matches } = useFilter();
+  const { matches, year } = useFilter();
   const [sales, setSales] = useState<Sale[]>([]);
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [loading, setLoading] = useState(true);
@@ -29,6 +31,25 @@ export default function ReportsPage() {
 
   const mS = sales.filter((s) => matches(s.date));
   const mE = expenses.filter((e) => matches(e.date));
+
+  // Monthly breakdown for the selected year
+  const yearSales = sales.filter((s) => new Date(s.date).getFullYear() === year);
+  const yearExpenses = expenses.filter((e) => new Date(e.date).getFullYear() === year);
+  const monthly = Array.from({ length: 12 }, (_, m) => {
+    const inc = yearSales
+      .filter((s) => new Date(s.date).getMonth() === m)
+      .reduce((a, x) => a + Number(x.total), 0);
+    const exp = yearExpenses
+      .filter((e) => new Date(e.date).getMonth() === m)
+      .reduce((a, x) => a + Number(x.amount), 0);
+    const profit = inc - exp;
+    const margin = inc > 0 ? Math.round((profit / inc) * 100) : 0;
+    return { label: MONTHS[m], inc, exp, profit, margin, hasData: inc > 0 || exp > 0 };
+  });
+  const yearTotalInc = monthly.reduce((a, r) => a + r.inc, 0);
+  const yearTotalExp = monthly.reduce((a, r) => a + r.exp, 0);
+  const yearTotalProfit = yearTotalInc - yearTotalExp;
+  const yearTotalMargin = yearTotalInc > 0 ? Math.round((yearTotalProfit / yearTotalInc) * 100) : 0;
   const tI = mS.reduce((s, x) => s + Number(x.total), 0);
   const tE = mE.reduce((s, x) => s + Number(x.amount), 0);
   const p = tI - tE;
@@ -72,6 +93,66 @@ export default function ReportsPage() {
           {renderCats(incCats, '#1a2b45', '#1D9E75')}
         </div>
       </div>
+
+      {/* ตารางสรุปรายเดือนรายปี */}
+      <div className="card" style={{ marginTop: 10 }}>
+        <div className="card-title" style={{ marginBottom: 10 }}>สรุปรายเดือน · ปี {year}</div>
+        <div style={{ overflowX: 'auto' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12, fontFamily: 'Kanit' }}>
+            <thead>
+              <tr style={{ background: '#f8f9fb' }}>
+                <th style={th}>เดือน</th>
+                <th style={{ ...th, textAlign: 'right' }}>รายรับ</th>
+                <th style={{ ...th, textAlign: 'right' }}>รายจ่าย</th>
+                <th style={{ ...th, textAlign: 'right' }}>กำไร</th>
+                <th style={{ ...th, textAlign: 'right' }}>Margin</th>
+              </tr>
+            </thead>
+            <tbody>
+              {monthly.map((r) => (
+                <tr key={r.label} style={{ borderTop: '0.5px solid #f0f2f5' }}>
+                  <td style={{ ...td, fontWeight: 500, color: '#1a2b45' }}>{r.label}</td>
+                  <td style={{ ...td, textAlign: 'right', color: r.inc > 0 ? '#1D9E75' : '#c5ccd6', fontWeight: r.inc > 0 ? 500 : 400 }}>
+                    {r.inc > 0 ? '฿' + r.inc.toLocaleString('th-TH') : '—'}
+                  </td>
+                  <td style={{ ...td, textAlign: 'right', color: r.exp > 0 ? '#E24B4A' : '#c5ccd6', fontWeight: r.exp > 0 ? 500 : 400 }}>
+                    {r.exp > 0 ? '฿' + r.exp.toLocaleString('th-TH') : '—'}
+                  </td>
+                  <td style={{ ...td, textAlign: 'right', color: !r.hasData ? '#c5ccd6' : r.profit >= 0 ? '#1D9E75' : '#E24B4A', fontWeight: r.hasData ? 500 : 400 }}>
+                    {!r.hasData ? '—' : (r.profit < 0 ? '-' : '') + '฿' + Math.abs(r.profit).toLocaleString('th-TH')}
+                  </td>
+                  <td style={{ ...td, textAlign: 'right', color: r.inc === 0 ? '#c5ccd6' : r.margin >= 0 ? '#3759E3' : '#E24B4A', fontWeight: r.inc > 0 ? 500 : 400 }}>
+                    {r.inc === 0 ? '—' : `${r.margin}%`}
+                  </td>
+                </tr>
+              ))}
+              <tr style={{ borderTop: '1.5px solid #e8eaed', background: '#fafbfc' }}>
+                <td style={{ ...td, fontWeight: 600, color: '#a0aec0', fontSize: 11, letterSpacing: 0.3, textTransform: 'uppercase' }}>รวม</td>
+                <td style={{ ...td, textAlign: 'right', color: '#1D9E75', fontWeight: 600 }}>฿{yearTotalInc.toLocaleString('th-TH')}</td>
+                <td style={{ ...td, textAlign: 'right', color: '#E24B4A', fontWeight: 600 }}>฿{yearTotalExp.toLocaleString('th-TH')}</td>
+                <td style={{ ...td, textAlign: 'right', color: yearTotalProfit >= 0 ? '#1D9E75' : '#E24B4A', fontWeight: 600 }}>
+                  {(yearTotalProfit < 0 ? '-' : '') + '฿' + Math.abs(yearTotalProfit).toLocaleString('th-TH')}
+                </td>
+                <td style={{ ...td, textAlign: 'right', color: yearTotalMargin >= 0 ? '#3759E3' : '#E24B4A', fontWeight: 600 }}>{yearTotalMargin}%</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   );
 }
+
+const th: React.CSSProperties = {
+  padding: '8px 12px',
+  textAlign: 'left',
+  fontSize: 10,
+  color: '#a0aec0',
+  fontWeight: 500,
+  letterSpacing: 0.3,
+  textTransform: 'uppercase',
+};
+const td: React.CSSProperties = {
+  padding: '9px 12px',
+  whiteSpace: 'nowrap',
+};
