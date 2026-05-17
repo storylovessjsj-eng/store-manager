@@ -1,8 +1,8 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
-import { Sale, Expense, formatTHB } from '@/lib/types';
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
+import { Sale, Expense, formatTHB, formatShort } from '@/lib/types';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell, LabelList } from 'recharts';
 
 const MONTHS = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
 
@@ -48,8 +48,12 @@ export default function ChartsPage() {
             <XAxis dataKey="label" tick={{ fontSize: 10, fill: '#a0aec0', fontFamily: 'Kanit' }} axisLine={false} tickLine={false} />
             <YAxis tick={{ fontSize: 10, fill: '#a0aec0', fontFamily: 'Kanit' }} axisLine={false} tickLine={false} tickFormatter={(v) => '฿' + v.toLocaleString()} />
             <Tooltip formatter={(v) => formatTHB(Number(v))} contentStyle={{ fontSize: 11, borderRadius: 8, fontFamily: 'Kanit' }} />
-            <Bar dataKey="inc" name="รายรับ" fill="#1a2b45" radius={3} />
-            <Bar dataKey="exp" name="รายจ่าย" fill="#f5a623" radius={3} />
+            <Bar dataKey="inc" name="รายรับ" fill="#1a2b45" radius={3}>
+              <LabelList dataKey="inc" position="top" fontSize={9} fill="#1a2b45" formatter={formatShort} />
+            </Bar>
+            <Bar dataKey="exp" name="รายจ่าย" fill="#f5a623" radius={3}>
+              <LabelList dataKey="exp" position="top" fontSize={9} fill="#d4891a" formatter={formatShort} />
+            </Bar>
           </BarChart>
         </ChartCard>
 
@@ -60,6 +64,7 @@ export default function ChartsPage() {
             <Tooltip formatter={(v) => formatTHB(Number(v))} contentStyle={{ fontSize: 11, borderRadius: 8, fontFamily: 'Kanit' }} />
             <Bar dataKey="profit" radius={3}>
               {monthly.map((d, i) => <Cell key={i} fill={d.profit >= 0 ? '#1D9E75' : '#F09595'} />)}
+              <LabelList dataKey="profit" position="top" fontSize={9} fill="#1a2b45" formatter={formatShort} />
             </Bar>
           </BarChart>
         </ChartCard>
@@ -69,8 +74,12 @@ export default function ChartsPage() {
             <XAxis dataKey="label" tick={{ fontSize: 10, fill: '#a0aec0', fontFamily: 'Kanit' }} axisLine={false} tickLine={false} />
             <YAxis tick={{ fontSize: 10, fill: '#a0aec0', fontFamily: 'Kanit' }} axisLine={false} tickLine={false} tickFormatter={(v) => '฿' + v.toLocaleString()} />
             <Tooltip formatter={(v) => formatTHB(Number(v))} contentStyle={{ fontSize: 11, borderRadius: 8, fontFamily: 'Kanit' }} />
-            <Bar dataKey="inc" name="รายรับ" fill="#1a2b45" radius={4} />
-            <Bar dataKey="exp" name="รายจ่าย" fill="#f5a623" radius={4} />
+            <Bar dataKey="inc" name="รายรับ" fill="#1a2b45" radius={4}>
+              <LabelList dataKey="inc" position="top" fontSize={9} fill="#1a2b45" formatter={formatShort} />
+            </Bar>
+            <Bar dataKey="exp" name="รายจ่าย" fill="#f5a623" radius={4}>
+              <LabelList dataKey="exp" position="top" fontSize={9} fill="#d4891a" formatter={formatShort} />
+            </Bar>
           </BarChart>
         </ChartCard>
 
@@ -81,6 +90,7 @@ export default function ChartsPage() {
             <Tooltip formatter={(v) => formatTHB(Number(v))} contentStyle={{ fontSize: 11, borderRadius: 8, fontFamily: 'Kanit' }} />
             <Bar dataKey="profit" radius={4}>
               {yearly.map((d, i) => <Cell key={i} fill={d.profit >= 0 ? '#1D9E75' : '#F09595'} />)}
+              <LabelList dataKey="profit" position="top" fontSize={9} fill="#1a2b45" formatter={formatShort} />
             </Bar>
           </BarChart>
         </ChartCard>

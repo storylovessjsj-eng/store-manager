@@ -96,4 +96,16 @@ export const EXPENSE_CATEGORIES = [
 export const formatTHB = (n: number) =>
   '฿' + Math.round(n).toLocaleString('th-TH');
 
+/** Format as short money string for bar chart labels: ฿1.2k / ฿850 / '' */
+export const formatShort = (v: unknown): string => {
+  const n = Math.round(Number(v));
+  if (!n) return '';
+  const abs = Math.abs(n);
+  if (abs >= 1000) {
+    const k = abs / 1000;
+    return (n < 0 ? '-' : '') + '฿' + k.toFixed(abs % 1000 === 0 ? 0 : 1) + 'k';
+  }
+  return (n < 0 ? '-' : '') + '฿' + abs;
+};
+
 export const todayISO = () => new Date().toISOString().slice(0, 10);

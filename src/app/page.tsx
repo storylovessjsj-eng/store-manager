@@ -1,12 +1,12 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
-import { Sale, Expense, formatTHB } from '@/lib/types';
+import { Sale, Expense, formatTHB, formatShort } from '@/lib/types';
 import { useFilter } from '@/components/FilterContext';
 import { useRealtimeRefresh } from '@/lib/useRealtimeRefresh';
 import { CategoryIcon, cleanCategoryLabel } from '@/components/CategoryIcon';
 import {
-  BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell,
+  BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LabelList,
 } from 'recharts';
 
 type SaleItem = { product_name: string; quantity: number; price: number };
@@ -108,8 +108,12 @@ export default function Dashboard() {
                 <XAxis dataKey="label" tick={{ fontSize: 10, fill: '#a0aec0', fontFamily: 'Kanit' }} axisLine={false} tickLine={false} />
                 <YAxis tick={{ fontSize: 10, fill: '#a0aec0', fontFamily: 'Kanit' }} axisLine={false} tickLine={false} tickFormatter={(v) => '฿' + v.toLocaleString()} />
                 <Tooltip formatter={(v) => formatTHB(Number(v))} contentStyle={{ fontSize: 11, borderRadius: 8, border: '1px solid #e8eaed', fontFamily: 'Kanit' }} />
-                <Bar dataKey="inc" name="รายรับ" fill="#1a2b45" radius={3} />
-                <Bar dataKey="exp" name="รายจ่าย" fill="#f5a623" radius={3} />
+                <Bar dataKey="inc" name="รายรับ" fill="#1a2b45" radius={3}>
+                  <LabelList dataKey="inc" position="top" fontSize={9} fill="#1a2b45" formatter={formatShort} />
+                </Bar>
+                <Bar dataKey="exp" name="รายจ่าย" fill="#f5a623" radius={3}>
+                  <LabelList dataKey="exp" position="top" fontSize={9} fill="#d4891a" formatter={formatShort} />
+                </Bar>
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -145,7 +149,10 @@ export default function Dashboard() {
                 <XAxis dataKey="label" tick={{ fontSize: 10, fill: '#a0aec0', fontFamily: 'Kanit' }} axisLine={false} tickLine={false} />
                 <YAxis hide />
                 <Tooltip formatter={(v) => formatTHB(Number(v))} contentStyle={{ fontSize: 11, borderRadius: 8, fontFamily: 'Kanit' }} />
-                <Bar dataKey="v" radius={6}><Cell fill="#1a2b45" /><Cell fill="#f5a623" /></Bar>
+                <Bar dataKey="v" radius={6}>
+                  <Cell fill="#1a2b45" /><Cell fill="#f5a623" />
+                  <LabelList dataKey="v" position="top" fontSize={9} fill="#1a2b45" formatter={formatShort} />
+                </Bar>
               </BarChart>
             </ResponsiveContainer>
           </div>
