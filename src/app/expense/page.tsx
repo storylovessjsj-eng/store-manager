@@ -4,6 +4,7 @@ import { supabase } from '@/lib/supabase';
 import { Expense, formatTHB } from '@/lib/types';
 import { useFilter } from '@/components/FilterContext';
 import { useRealtimeRefresh } from '@/lib/useRealtimeRefresh';
+import { CategoryIcon, cleanCategoryLabel } from '@/components/CategoryIcon';
 
 export default function ExpensePage() {
   const { matches } = useFilter();
@@ -54,7 +55,7 @@ export default function ExpensePage() {
                 )}
                 {e.description || e.category}
               </div>
-              <div><span className="ei-cat">{e.category}</span></div>
+              <div><span className="ei-cat"><CategoryIcon category={e.category} />{cleanCategoryLabel(e.category)}</span></div>
               <div className="ei-date">{e.date.slice(5).replace('-', '/')}</div>
               <div className="ei-amt ei-ae">{formatTHB(Number(e.amount))}</div>
               <div></div>

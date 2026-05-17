@@ -4,6 +4,7 @@ import { supabase } from '@/lib/supabase';
 import { Sale, Expense, formatTHB } from '@/lib/types';
 import { useFilter } from '@/components/FilterContext';
 import { useRealtimeRefresh } from '@/lib/useRealtimeRefresh';
+import { CategoryIcon, cleanCategoryLabel } from '@/components/CategoryIcon';
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell,
 } from 'recharts';
@@ -173,7 +174,7 @@ export default function Dashboard() {
               <div key={e.id} className="ei">
                 <div className="ei-dot-wrap"><div className={`ei-dot ${e.type === 'income' ? 'ei-i' : 'ei-e'}`} /></div>
                 <div className="ei-desc">{e.desc}</div>
-                <div><span className="ei-cat">{e.cat}</span></div>
+                <div><span className="ei-cat"><CategoryIcon category={e.cat} />{cleanCategoryLabel(e.cat)}</span></div>
                 <div className="ei-date">{e.date.slice(5).replace('-', '/')}</div>
                 <div className={`ei-amt ${e.type === 'income' ? 'ei-ai' : 'ei-ae'}`}>{formatTHB(e.amt)}</div>
                 <div></div>
@@ -190,7 +191,7 @@ export default function Dashboard() {
             <div>
               {cats.map(([name, val]) => (
                 <div key={name} className="cat-row">
-                  <div className="cat-name">{name}</div>
+                  <div className="cat-name"><CategoryIcon category={name} />{cleanCategoryLabel(name)}</div>
                   <div className="cat-track">
                     <div className="cat-fill" style={{ width: `${Math.round((val / catMax) * 100)}%`, background: '#f5a623' }} />
                   </div>

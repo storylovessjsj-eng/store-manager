@@ -4,6 +4,7 @@ import { supabase } from '@/lib/supabase';
 import { Sale, Expense, formatTHB } from '@/lib/types';
 import { useFilter } from '@/components/FilterContext';
 import { useRealtimeRefresh } from '@/lib/useRealtimeRefresh';
+import { CategoryIcon, cleanCategoryLabel } from '@/components/CategoryIcon';
 
 export default function ReportsPage() {
   const { matches } = useFilter();
@@ -44,7 +45,7 @@ export default function ReportsPage() {
     if (arr.length === 0) return <div className="empty">ยังไม่มีข้อมูล</div>;
     return arr.map(([name, val]) => (
       <div key={name} className="cat-row">
-        <div className="cat-name">{name}</div>
+        <div className="cat-name"><CategoryIcon category={name} />{cleanCategoryLabel(name)}</div>
         <div className="cat-track"><div className="cat-fill" style={{ width: `${Math.round((val / max) * 100)}%`, background: color }} /></div>
         <div className="cat-amt" style={{ color: textColor }}>{formatTHB(val)}</div>
       </div>

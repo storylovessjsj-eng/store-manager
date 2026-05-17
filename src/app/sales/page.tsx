@@ -4,6 +4,7 @@ import { supabase } from '@/lib/supabase';
 import { INCOME_CATEGORIES, EXPENSE_CATEGORIES, formatTHB, todayISO } from '@/lib/types';
 import { useFilter } from '@/components/FilterContext';
 import { useRealtimeRefresh } from '@/lib/useRealtimeRefresh';
+import { CategoryIcon, cleanCategoryLabel } from '@/components/CategoryIcon';
 
 type Entry = {
   id: string;
@@ -254,7 +255,7 @@ export default function RecordPage() {
                 )}
                 {e.desc}
               </div>
-              <div><span className="ei-cat">{e.cat}</span></div>
+              <div><span className="ei-cat"><CategoryIcon category={e.cat} />{cleanCategoryLabel(e.cat)}</span></div>
               <div className="ei-date">{e.date.slice(5).replace('-', '/')}</div>
               <div className={`ei-amt ${e.type === 'income' ? 'ei-ai' : 'ei-ae'}`}>{formatTHB(e.amt)}</div>
               <button className="ei-del" onClick={() => del(e)} aria-label="ลบ">

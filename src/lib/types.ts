@@ -76,10 +76,10 @@ export const ORDER_STATUS_COLOR: Record<OrderStatus, string> = {
 };
 
 export const INCOME_CATEGORIES = [
-  'ขายสินค้า',
+  'ลูกค้าชำระ',
   'ค่ามัดจำ',
   'ค่าขนส่ง',
-  'เบ็ดเตล็ด',
+  'อื่นๆ',
 ] as const;
 
 export const EXPENSE_CATEGORIES = [

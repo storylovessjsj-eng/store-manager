@@ -4,6 +4,7 @@ import { supabase } from '@/lib/supabase';
 import { Sale, formatTHB } from '@/lib/types';
 import { useFilter } from '@/components/FilterContext';
 import { useRealtimeRefresh } from '@/lib/useRealtimeRefresh';
+import { CategoryIcon, cleanCategoryLabel } from '@/components/CategoryIcon';
 
 export default function IncomePage() {
   const { matches } = useFilter();
@@ -54,7 +55,7 @@ export default function IncomePage() {
                 )}
                 {s.description || s.notes || 'รายรับ'}
               </div>
-              <div><span className="ei-cat">{s.category || 'ขายสินค้า'}</span></div>
+              <div><span className="ei-cat"><CategoryIcon category={s.category || 'ลูกค้าชำระ'} />{cleanCategoryLabel(s.category || 'ลูกค้าชำระ')}</span></div>
               <div className="ei-date">{s.date.slice(5).replace('-', '/')}</div>
               <div className="ei-amt ei-ai">{formatTHB(Number(s.total))}</div>
               <div></div>
