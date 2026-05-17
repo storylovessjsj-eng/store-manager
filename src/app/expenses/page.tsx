@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { Expense, EXPENSE_CATEGORIES, formatTHB, todayISO } from '@/lib/types';
 import { emojiFor } from '@/components/CategoryIcon';
+import { confirmDialog } from '@/components/confirm';
 
 export default function ExpensesPage() {
   const [expenses, setExpenses] = useState<Expense[]>([]);
@@ -25,7 +26,7 @@ export default function ExpensesPage() {
     setForm({ ...form, amount: '', description: '' });
     load();
   }
-  async function del(id: string) { if (!confirm('ลบรายการนี้?')) return; await supabase.from('expenses').delete().eq('id', id); load(); }
+  async function del(id: string) { if (!(await confirmDialog('ลบรายการนี้?'))) return; await supabase.from('expenses').delete().eq('id', id); load(); }
 
   const total = expenses.reduce((s, e) => s + Number(e.amount), 0);
 

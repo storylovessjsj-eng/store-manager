@@ -5,6 +5,7 @@ import { INCOME_CATEGORIES, EXPENSE_CATEGORIES, formatTHB, todayISO } from '@/li
 import { useFilter } from '@/components/FilterContext';
 import { useRealtimeRefresh } from '@/lib/useRealtimeRefresh';
 import { CategoryIcon, cleanCategoryLabel, emojiFor } from '@/components/CategoryIcon';
+import { confirmDialog } from '@/components/confirm';
 
 type Entry = {
   id: string;
@@ -126,7 +127,7 @@ export default function RecordPage() {
   }
 
   async function del(e: Entry) {
-    if (!confirm('ลบรายการนี้?')) return;
+    if (!(await confirmDialog('ลบรายการนี้?'))) return;
     if (e.type === 'income') await supabase.from('sales').delete().eq('id', e.id);
     else await supabase.from('expenses').delete().eq('id', e.id);
     load();

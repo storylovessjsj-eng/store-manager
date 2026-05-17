@@ -4,6 +4,7 @@ import Sidebar from '@/components/Sidebar';
 import Topbar from '@/components/Topbar';
 import PWAInit from '@/components/PWAInit';
 import AuthGate from '@/components/AuthGate';
+import ConfirmHost from '@/components/confirm';
 import { FilterProvider } from '@/components/FilterContext';
 import './globals.css';
 
@@ -34,6 +35,7 @@ export default function RootLayout({
     <html lang="th" className={`${kanit.variable}`}>
       <body>
         <PWAInit />
+        <ConfirmHost />
         <AuthGate>
           <FilterProvider>
             <div className="app">

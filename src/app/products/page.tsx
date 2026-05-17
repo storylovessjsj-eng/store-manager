@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { Product, formatTHB } from '@/lib/types';
 import { useRealtimeRefresh } from '@/lib/useRealtimeRefresh';
+import { confirmDialog } from '@/components/confirm';
 
 export default function ProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -38,7 +39,7 @@ export default function ProductsPage() {
     if (error) return alert('Error: ' + error.message);
     setShowForm(false); load();
   }
-  async function del(id: string) { if (!confirm('ลบสินค้านี้?')) return; await supabase.from('products').delete().eq('id', id); load(); }
+  async function del(id: string) { if (!(await confirmDialog('ลบสินค้านี้?'))) return; await supabase.from('products').delete().eq('id', id); load(); }
   async function adjust(p: Product, d: number) { await supabase.from('products').update({ stock: Math.max(0, p.stock + d) }).eq('id', p.id); load(); }
 
   const lowCount = products.filter((p) => p.stock <= 5).length;

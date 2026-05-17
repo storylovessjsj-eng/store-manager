@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useFilter } from './FilterContext';
 import { useRealtimeRefresh } from '@/lib/useRealtimeRefresh';
+import { confirmDialog } from '@/components/confirm';
 
 type NavGroup = { href: string; label: string; icon: string; sub?: string[] };
 
@@ -64,7 +65,7 @@ export default function Sidebar() {
   }
 
   async function handleLogout() {
-    if (!confirm('ออกจากระบบ?')) return;
+    if (!(await confirmDialog('ออกจากระบบ?'))) return;
     await supabase.auth.signOut();
   }
 
@@ -144,7 +145,7 @@ export default function Sidebar() {
             type: string; name?: string; desc?: string; description?: string;
             amount?: number; amt?: number; cat?: string; category?: string; date: string;
           }>;
-          if (!confirm(`พบ ${arr.length} รายการ (รูปแบบ transactions) — นำเข้าทั้งหมด?`)) return;
+          if (!(await confirmDialog(`พบ ${arr.length} รายการ (รูปแบบ transactions) — นำเข้าทั้งหมด?`))) return;
           const salesRows = arr
             .filter((t) => t.type === 'income')
             .map((t) => ({
@@ -175,7 +176,7 @@ export default function Sidebar() {
         }
 
         // Format B: native Store Manager backup (per-table)
-        if (!confirm('นำเข้าข้อมูล? ข้อมูลที่ ID ตรงกันจะถูกอัพเดต (upsert)')) return;
+        if (!(await confirmDialog('นำเข้าข้อมูล? ข้อมูลที่ ID ตรงกันจะถูกอัพเดต (upsert)'))) return;
         const tables: Array<[string, Row[]]> = [
           ['products', data.products],
           ['expenses', data.expenses],

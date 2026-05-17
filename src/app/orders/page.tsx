@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { Order, OrderStatus, ORDER_STATUS_LABEL, ORDER_STATUS_COLOR, formatTHB, todayISO } from '@/lib/types';
 import { useRealtimeRefresh } from '@/lib/useRealtimeRefresh';
+import { confirmDialog } from '@/components/confirm';
 
 type Tab = 'all' | OrderStatus;
 
@@ -71,7 +72,7 @@ export default function OrdersPage() {
   }
 
   async function del(id: string) {
-    if (!confirm('ลบออเดอร์นี้?')) return;
+    if (!(await confirmDialog('ลบออเดอร์นี้?'))) return;
     await supabase.from('orders').delete().eq('id', id);
     load();
   }
