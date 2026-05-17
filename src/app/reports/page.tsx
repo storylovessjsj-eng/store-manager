@@ -3,12 +3,14 @@ import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { Sale, Expense, formatTHB } from '@/lib/types';
 import { useFilter } from '@/components/FilterContext';
+import { useRealtimeRefresh } from '@/lib/useRealtimeRefresh';
 
 export default function ReportsPage() {
   const { matches } = useFilter();
   const [sales, setSales] = useState<Sale[]>([]);
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [loading, setLoading] = useState(true);
+  const [version, setVersion] = useState(0);
 
   useEffect(() => {
     (async () => {
@@ -20,7 +22,9 @@ export default function ReportsPage() {
       setExpenses((e as Expense[]) || []);
       setLoading(false);
     })();
-  }, []);
+  }, [version]);
+
+  useRealtimeRefresh(['sales', 'expenses'], () => setVersion((v) => v + 1));
 
   const mS = sales.filter((s) => matches(s.date));
   const mE = expenses.filter((e) => matches(e.date));

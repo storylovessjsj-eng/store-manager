@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { Order, OrderStatus, ORDER_STATUS_LABEL, ORDER_STATUS_COLOR, formatTHB, todayISO } from '@/lib/types';
+import { useRealtimeRefresh } from '@/lib/useRealtimeRefresh';
 
 type Tab = 'all' | OrderStatus;
 
@@ -27,6 +28,7 @@ export default function OrdersPage() {
     setLoading(false);
   }
   useEffect(() => { load(); }, []);
+  useRealtimeRefresh('orders', () => load());
 
   function reset() {
     setEditing(null);

@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { formatTHB } from '@/lib/types';
+import { useRealtimeRefresh } from '@/lib/useRealtimeRefresh';
 
 type Profile = { name: string; type: string; tagline: string; image_url: string | null };
 
@@ -13,6 +14,7 @@ export default function ProfilePage() {
   const fileInput = useRef<HTMLInputElement>(null);
 
   useEffect(() => { load(); }, []);
+  useRealtimeRefresh(['shop_profile', 'sales', 'expenses'], () => load());
 
   async function load() {
     const { data: userRes } = await supabase.auth.getUser();

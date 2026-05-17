@@ -3,11 +3,13 @@ import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { Sale, formatTHB } from '@/lib/types';
 import { useFilter } from '@/components/FilterContext';
+import { useRealtimeRefresh } from '@/lib/useRealtimeRefresh';
 
 export default function IncomePage() {
   const { matches } = useFilter();
   const [all, setAll] = useState<Sale[]>([]);
   const [loading, setLoading] = useState(true);
+  const [version, setVersion] = useState(0);
 
   useEffect(() => {
     (async () => {
@@ -15,7 +17,9 @@ export default function IncomePage() {
       setAll((data as Sale[]) || []);
       setLoading(false);
     })();
-  }, []);
+  }, [version]);
+
+  useRealtimeRefresh('sales', () => setVersion((v) => v + 1));
 
   const items = all.filter((s) => matches(s.date));
   const total = items.reduce((s, x) => s + Number(x.total), 0);

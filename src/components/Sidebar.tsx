@@ -4,6 +4,7 @@ import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useFilter } from './FilterContext';
+import { useRealtimeRefresh } from '@/lib/useRealtimeRefresh';
 
 type NavGroup = { href: string; label: string; icon: string; sub?: string[] };
 
@@ -79,6 +80,8 @@ export default function Sidebar() {
     window.addEventListener('profile-updated', handler);
     return () => window.removeEventListener('profile-updated', handler);
   }, []);
+
+  useRealtimeRefresh('shop_profile', () => loadProfile());
 
   function setTheme(id: string) {
     setCurrentTheme(id);

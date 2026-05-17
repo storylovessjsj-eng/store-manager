@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { Sale, Expense, formatTHB } from '@/lib/types';
 import { useFilter } from '@/components/FilterContext';
+import { useRealtimeRefresh } from '@/lib/useRealtimeRefresh';
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell,
 } from 'recharts';
@@ -18,6 +19,7 @@ export default function Dashboard() {
   const [sales, setSales] = useState<SaleWithItems[]>([]);
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [loading, setLoading] = useState(true);
+  const [version, setVersion] = useState(0);
 
   useEffect(() => {
     (async () => {
@@ -29,7 +31,9 @@ export default function Dashboard() {
       setExpenses(e || []);
       setLoading(false);
     })();
-  }, []);
+  }, [version]);
+
+  useRealtimeRefresh(['sales', 'sale_items', 'expenses'], () => setVersion((v) => v + 1));
 
   const mSales = sales.filter((s) => matches(s.date));
   const mExp = expenses.filter((e) => matches(e.date));

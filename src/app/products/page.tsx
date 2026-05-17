@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { Product, formatTHB } from '@/lib/types';
+import { useRealtimeRefresh } from '@/lib/useRealtimeRefresh';
 
 export default function ProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -17,6 +18,7 @@ export default function ProductsPage() {
     setLoading(false);
   }
   useEffect(() => { load(); }, []);
+  useRealtimeRefresh('products', () => load());
 
   function openNew() { setEditing(null); setForm({ name: '', price: '', cost: '', stock: '', category: '' }); setShowForm(true); }
   function openEdit(p: Product) { setEditing(p); setForm({ name: p.name, price: String(p.price), cost: String(p.cost), stock: String(p.stock), category: p.category || '' }); setShowForm(true); }

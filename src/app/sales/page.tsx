@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { INCOME_CATEGORIES, EXPENSE_CATEGORIES, formatTHB, todayISO } from '@/lib/types';
 import { useFilter } from '@/components/FilterContext';
+import { useRealtimeRefresh } from '@/lib/useRealtimeRefresh';
 
 type Entry = {
   id: string;
@@ -29,6 +30,7 @@ export default function RecordPage() {
   const fileInput = useRef<HTMLInputElement>(null);
 
   useEffect(() => { load(); }, []);
+  useRealtimeRefresh(['sales', 'expenses'], () => load());
   useEffect(() => {
     setCat(type === 'income' ? INCOME_CATEGORIES[0] : EXPENSE_CATEGORIES[0]);
   }, [type]);
