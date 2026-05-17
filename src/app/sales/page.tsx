@@ -184,7 +184,6 @@ export default function RecordPage() {
               ref={fileInput}
               type="file"
               accept="image/*"
-              capture="environment"
               style={{ display: 'none' }}
               onChange={handleImg}
             />
