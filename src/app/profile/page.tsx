@@ -15,8 +15,11 @@ export default function ProfilePage() {
   useEffect(() => { load(); }, []);
 
   async function load() {
+    const { data: userRes } = await supabase.auth.getUser();
+    const uid = userRes.user?.id;
+    if (!uid) { setLoading(false); return; }
     const [{ data: p }, { data: sales }, { data: expenses }] = await Promise.all([
-      supabase.from('shop_profile').select('*').eq('id', 1).maybeSingle(),
+      supabase.from('shop_profile').select('*').eq('user_id', uid).maybeSingle(),
       supabase.from('sales').select('total'),
       supabase.from('expenses').select('amount'),
     ]);
@@ -29,15 +32,18 @@ export default function ProfilePage() {
 
   async function save() {
     if (!profile.name.trim()) return alert('กรุณาระบุชื่อร้าน');
+    const { data: userRes } = await supabase.auth.getUser();
+    const uid = userRes.user?.id;
+    if (!uid) return alert('ยังไม่ login');
     setSaving(true);
     const { error } = await supabase.from('shop_profile').upsert({
-      id: 1,
+      user_id: uid,
       name: profile.name.trim(),
       type: profile.type.trim() || null,
       tagline: profile.tagline.trim() || null,
       image_url: profile.image_url,
       updated_at: new Date().toISOString(),
-    });
+    }, { onConflict: 'user_id' });
     setSaving(false);
     if (error) return alert('Error: ' + error.message);
     window.dispatchEvent(new CustomEvent('profile-updated'));

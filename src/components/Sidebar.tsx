@@ -55,8 +55,16 @@ export default function Sidebar() {
   });
 
   async function loadProfile() {
-    const { data } = await supabase.from('shop_profile').select('name,type,image_url').eq('id', 1).maybeSingle();
+    const { data: userRes } = await supabase.auth.getUser();
+    if (!userRes.user) return;
+    const { data } = await supabase.from('shop_profile').select('name,type,image_url').eq('user_id', userRes.user.id).maybeSingle();
     if (data) setProfile({ name: data.name, type: data.type || 'ร้านค้า', image_url: data.image_url });
+    else setProfile({ name: userRes.user.email?.split('@')[0] || 'ร้านของฉัน', type: 'ร้านค้า', image_url: null });
+  }
+
+  async function handleLogout() {
+    if (!confirm('ออกจากระบบ?')) return;
+    await supabase.auth.signOut();
   }
 
   useEffect(() => {
@@ -326,7 +334,7 @@ export default function Sidebar() {
       </div>
 
       <div className="sb-bot">
-        <div className="sb-out">
+        <div className="sb-out" onClick={handleLogout} style={{ cursor: 'pointer' }}>
           <i className="ti ti-power" style={{ fontSize: 13 }} />
           <span>ออกจากระบบ</span>
         </div>
