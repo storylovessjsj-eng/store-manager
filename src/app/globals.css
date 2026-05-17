@@ -1,0 +1,8 @@
+@import "tailwindcss";
+@import "./inkpress.css";
+
+@theme {
+  --font-sans: var(--font-kanit), 'Kanit', sans-serif;
+}
+
+html, body { font-family: 'Kanit', sans-serif; }
