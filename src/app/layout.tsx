@@ -1,7 +1,8 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Kanit } from 'next/font/google';
 import Sidebar from '@/components/Sidebar';
 import Topbar from '@/components/Topbar';
+import PWAInit from '@/components/PWAInit';
 import { FilterProvider } from '@/components/FilterContext';
 import './globals.css';
 
@@ -14,6 +15,22 @@ const kanit = Kanit({
 export const metadata: Metadata = {
   title: 'Store Manager',
   description: 'ระบบจัดการร้านค้า',
+  applicationName: 'Store Manager',
+  appleWebApp: {
+    capable: true,
+    title: 'Store Manager',
+    statusBarStyle: 'black-translucent',
+  },
+  icons: {
+    icon: '/icon.svg',
+    apple: '/icon.svg',
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: '#1a2b45',
+  width: 'device-width',
+  initialScale: 1,
 };
 
 export default function RootLayout({
@@ -22,6 +39,7 @@ export default function RootLayout({
   return (
     <html lang="th" className={`${kanit.variable}`}>
       <body>
+        <PWAInit />
         <FilterProvider>
           <div className="app">
             <Sidebar />
