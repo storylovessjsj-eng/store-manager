@@ -2,11 +2,13 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { Sale, Expense, formatTHB, formatShort } from '@/lib/types';
+import { useFilter } from '@/components/FilterContext';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell, LabelList } from 'recharts';
 
 const MONTHS = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
 
 export default function ChartsPage() {
+  const { year: y } = useFilter();
   const [sales, setSales] = useState<Sale[]>([]);
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [loading, setLoading] = useState(true);
@@ -22,8 +24,6 @@ export default function ChartsPage() {
       setLoading(false);
     })();
   }, []);
-
-  const y = new Date().getFullYear();
 
   const monthly = Array.from({ length: 12 }, (_, m) => {
     const inc = sales.filter((s) => { const d = new Date(s.date); return d.getMonth() === m && d.getFullYear() === y; }).reduce((a, x) => a + Number(x.total), 0);

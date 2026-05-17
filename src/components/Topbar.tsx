@@ -16,7 +16,8 @@ const titles: Record<string, string> = {
   '/profile': 'โปรไฟล์ร้าน',
 };
 
-const FILTERED_PATHS = new Set(['/', '/sales', '/income', '/expense', '/reports']);
+const FILTERED_PATHS = new Set(['/', '/sales', '/income', '/expense', '/reports', '/charts']);
+const YEAR_ONLY_PATHS = new Set(['/charts']);
 const MONTHS = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
 
 export default function Topbar() {
@@ -49,7 +50,7 @@ export default function Topbar() {
         >
           ☁️ Sync
         </button>
-        {usesFilter && view === 'month' && (
+        {usesFilter && view === 'month' && !YEAR_ONLY_PATHS.has(pathname) && (
           <select className="tsel" value={month} onChange={(e) => setMonth(parseInt(e.target.value))}>
             {MONTHS.map((m, i) => <option key={m} value={i}>{m}</option>)}
           </select>
