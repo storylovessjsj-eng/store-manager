@@ -108,7 +108,7 @@ function ChartCard({ title, sub, children }: { title: string; sub: string; child
           <div style={{ fontSize: 11, color: '#8a9ab5', marginTop: 1 }}>{sub}</div>
         </div>
       </div>
-      <div style={{ position: 'relative', width: '100%', height: 220 }}>
+      <div style={{ position: 'relative', width: '100%', height: 320 }}>
         <ResponsiveContainer>{children}</ResponsiveContainer>
       </div>
     </div>
