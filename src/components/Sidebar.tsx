@@ -41,8 +41,11 @@ type Row = Record<string, unknown>;
 
 export default function Sidebar() {
   const pathname = usePathname();
-  const { view, setView } = useFilter();
+  const { view, setView, drawerOpen, setDrawerOpen } = useFilter();
   const [themeOpen, setThemeOpen] = useState(false);
+
+  // Auto-close drawer on route change
+  useEffect(() => { setDrawerOpen(false); }, [pathname, setDrawerOpen]);
   const [dataOpen, setDataOpen] = useState(false);
   const [currentTheme, setCurrentTheme] = useState('default');
   const [profile, setProfile] = useState<{ name: string; type: string; image_url: string | null }>({
@@ -235,7 +238,9 @@ export default function Sidebar() {
   };
 
   return (
-    <div className="sidebar">
+    <>
+      {drawerOpen && <div className="drawer-backdrop" onClick={() => setDrawerOpen(false)} />}
+    <div className={`sidebar ${drawerOpen ? 'drawer-open' : ''}`}>
       <div className="sb-profile-fixed">
         <div className="sb-av">
           {profile.image_url ? (
@@ -327,6 +332,7 @@ export default function Sidebar() {
         </div>
       </div>
     </div>
+    </>
   );
 }
 

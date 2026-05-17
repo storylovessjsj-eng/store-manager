@@ -11,6 +11,8 @@ type Ctx = {
   setYear: (y: number) => void;
   setView: (v: ViewMode) => void;
   matches: (dateStr: string) => boolean;
+  drawerOpen: boolean;
+  setDrawerOpen: (b: boolean) => void;
 };
 
 const FilterContext = createContext<Ctx | null>(null);
@@ -20,6 +22,7 @@ export function FilterProvider({ children }: { children: ReactNode }) {
   const [month, setMonth] = useState(now.getMonth());
   const [year, setYear] = useState(now.getFullYear());
   const [view, setView] = useState<ViewMode>('month');
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   const matches = (dateStr: string) => {
     if (!dateStr) return false;
@@ -29,7 +32,7 @@ export function FilterProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <FilterContext.Provider value={{ month, year, view, setMonth, setYear, setView, matches }}>
+    <FilterContext.Provider value={{ month, year, view, setMonth, setYear, setView, matches, drawerOpen, setDrawerOpen }}>
       {children}
     </FilterContext.Provider>
   );

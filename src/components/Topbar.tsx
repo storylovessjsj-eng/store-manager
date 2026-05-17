@@ -1,5 +1,6 @@
 'use client';
 import { usePathname } from 'next/navigation';
+import { Menu } from 'lucide-react';
 import { useFilter } from './FilterContext';
 
 const titles: Record<string, string> = {
@@ -20,7 +21,7 @@ const MONTHS = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.'
 
 export default function Topbar() {
   const pathname = usePathname();
-  const { month, year, view, setMonth, setYear } = useFilter();
+  const { month, year, view, setMonth, setYear, setDrawerOpen } = useFilter();
 
   const title = titles[pathname] || '';
   const usesFilter = FILTERED_PATHS.has(pathname);
@@ -28,9 +29,19 @@ export default function Topbar() {
 
   return (
     <div className="topbar">
-      <div>
-        <div className="tb-title">{title}</div>
-        <div className="tb-sub">{sub}</div>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 6, minWidth: 0, flex: 1 }}>
+        <button
+          className="mobile-menu-btn"
+          onClick={() => setDrawerOpen(true)}
+          aria-label="เปิดเมนู"
+          type="button"
+        >
+          <Menu size={20} />
+        </button>
+        <div style={{ minWidth: 0 }}>
+          <div className="tb-title">{title}</div>
+          <div className="tb-sub">{sub}</div>
+        </div>
       </div>
       <div className="tb-r">
         <button
