@@ -44,6 +44,12 @@ export default function Dashboard() {
   const margin = tI > 0 ? Math.round((profit / tI) * 100) : 0;
   const profitPct = tI > 0 ? Math.round(((tI - tE) / tI) * 100) : 0;
 
+  // ยอดรวมทั้งร้าน (ทุกเดือน) สำหรับการ์ดสรุปด้านบน
+  const allI = sales.reduce((s, x) => s + Number(x.total), 0);
+  const allE = expenses.reduce((s, x) => s + Number(x.amount), 0);
+  const allProfit = allI - allE;
+  const allMargin = allI > 0 ? Math.round((allProfit / allI) * 100) : 0;
+
   const chartData = view === 'year'
     ? Array.from({ length: 5 }, (_, idx) => {
         const yr = cy - 4 + idx;
@@ -84,10 +90,10 @@ export default function Dashboard() {
     <div className="page active">
       {/* KPI ROW */}
       <div className="kpi-row">
-        <Kpi label="รายรับ" value={formatTHB(tI)} sub={`${mSales.length} บิล`} accentBg="#1a2b45" iconColor="#f5a623" iconClass="ti-arrow-up" />
-        <Kpi label="รายจ่าย" value={formatTHB(tE)} sub={`${mExp.length} รายการ`} accentBg="#fff3e0" iconColor="#f5a623" iconClass="ti-arrow-down" />
-        <Kpi label="กำไรสุทธิ" value={formatTHB(Math.abs(profit))} sub={profit > 0 ? 'มีกำไร' : profit < 0 ? 'ขาดทุน' : 'เสมอตัว'} accentBg="#e8f4ff" iconColor="#378ADD" iconClass="ti-chart-line" valColor={profit >= 0 ? '#1D9E75' : '#E24B4A'} valPrefix={profit < 0 ? '-' : ''} />
-        <Kpi label="อัตรากำไร (Margin)" value={`${margin}%`} sub="กำไร / รายรับ" accentBg="#e8f5ee" iconColor="#1D9E75" iconClass="ti-percentage" valColor={margin >= 50 ? '#1D9E75' : margin >= 0 ? '#d4891a' : '#E24B4A'} />
+        <Kpi label="รายรับ" value={formatTHB(allI)} sub={`${sales.length} บิล`} accentBg="#1a2b45" iconColor="#f5a623" iconClass="ti-arrow-up" />
+        <Kpi label="รายจ่าย" value={formatTHB(allE)} sub={`${expenses.length} รายการ`} accentBg="#fff3e0" iconColor="#f5a623" iconClass="ti-arrow-down" />
+        <Kpi label="กำไรสุทธิ" value={formatTHB(Math.abs(allProfit))} sub={allProfit > 0 ? 'มีกำไร' : allProfit < 0 ? 'ขาดทุน' : 'เสมอตัว'} accentBg="#e8f4ff" iconColor="#378ADD" iconClass="ti-chart-line" valColor={allProfit >= 0 ? '#1D9E75' : '#E24B4A'} valPrefix={allProfit < 0 ? '-' : ''} />
+        <Kpi label="อัตรากำไร (Margin)" value={`${allMargin}%`} sub="กำไร / รายรับ" accentBg="#e8f5ee" iconColor="#1D9E75" iconClass="ti-percentage" valColor={allMargin >= 50 ? '#1D9E75' : allMargin >= 0 ? '#d4891a' : '#E24B4A'} />
       </div>
 
       {/* MID ROW */}
