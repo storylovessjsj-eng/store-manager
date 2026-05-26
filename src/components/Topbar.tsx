@@ -5,6 +5,8 @@ import { useFilter } from './FilterContext';
 
 const titles: Record<string, string> = {
   '/': 'ภาพรวม',
+  '/yearly': 'ภาพรวม',
+  '/total': 'ภาพรวม',
   '/sales': 'บันทึกรายการ',
   '/income': 'รายรับ',
   '/expense': 'รายจ่าย',
@@ -16,7 +18,16 @@ const titles: Record<string, string> = {
   '/profile': 'โปรไฟล์ร้าน',
 };
 
-const FILTERED_PATHS = new Set(['/', '/sales', '/income', '/expense', '/reports', '/charts']);
+// หน้าภาพรวม 3 แบบ — กำหนดขอบเขตข้อมูล (ต้องตรงกับ scope ของ OverviewBoard)
+const OVERVIEW_SCOPE: Record<string, 'month' | 'year' | 'all'> = {
+  '/': 'month',
+  '/yearly': 'year',
+  '/total': 'all',
+};
+const SCOPE_SUB: Record<'month' | 'year' | 'all', string> = { month: 'รายเดือน', year: 'รายปี', all: 'รายสุทธิ' };
+
+// หน้าอื่นที่ใช้ฟิลเตอร์เดือน/ปีแบบเดิม (ขับด้วย view)
+const LEGACY_FILTERED = new Set(['/sales', '/income', '/expense', '/reports', '/charts']);
 const YEAR_ONLY_PATHS = new Set(['/charts']);
 const MONTHS = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
 
@@ -25,8 +36,12 @@ export default function Topbar() {
   const { month, year, view, setMonth, setYear, setDrawerOpen } = useFilter();
 
   const title = titles[pathname] || '';
-  const usesFilter = FILTERED_PATHS.has(pathname);
-  const sub = usesFilter ? (view === 'year' ? 'รายปี' : 'รายเดือน') : '';
+  const scope = OVERVIEW_SCOPE[pathname];
+  const legacy = LEGACY_FILTERED.has(pathname);
+
+  const sub = scope ? SCOPE_SUB[scope] : legacy ? (view === 'year' ? 'รายปี' : 'รายเดือน') : '';
+  const showMonth = scope ? scope === 'month' : (legacy && view === 'month' && !YEAR_ONLY_PATHS.has(pathname));
+  const showYear = scope ? scope !== 'all' : legacy;
 
   return (
     <div className="topbar">
@@ -50,12 +65,12 @@ export default function Topbar() {
         >
           ☁️ Sync
         </button>
-        {usesFilter && view === 'month' && !YEAR_ONLY_PATHS.has(pathname) && (
+        {showMonth && (
           <select className="tsel" value={month} onChange={(e) => setMonth(parseInt(e.target.value))}>
             {MONTHS.map((m, i) => <option key={m} value={i}>{m}</option>)}
           </select>
         )}
-        {usesFilter && (
+        {showYear && (
           <select className="tsel" value={year} onChange={(e) => setYear(parseInt(e.target.value))}>
             {Array.from({ length: 11 }, (_, i) => 2020 + i).map((y) => (
               <option key={y} value={y}>{y}</option>

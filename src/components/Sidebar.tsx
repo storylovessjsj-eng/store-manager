@@ -7,10 +7,14 @@ import { useFilter } from './FilterContext';
 import { useRealtimeRefresh } from '@/lib/useRealtimeRefresh';
 import { confirmDialog } from '@/components/confirm';
 
-type NavGroup = { href: string; label: string; icon: string; sub?: string[] };
+type NavGroup = { href: string; label: string; icon: string; sub?: string[]; links?: { label: string; href: string }[] };
 
 const mainNav: NavGroup[] = [
-  { href: '/', label: 'ภาพรวม', icon: 'ti-layout-dashboard', sub: ['รายเดือน', 'รายปี'] },
+  { href: '/', label: 'ภาพรวม', icon: 'ti-layout-dashboard', links: [
+    { label: 'รายเดือน', href: '/' },
+    { label: 'รายปี', href: '/yearly' },
+    { label: 'รายสุทธิ', href: '/total' },
+  ] },
   { href: '/sales', label: 'บันทึกรายการ', icon: 'ti-pencil-plus', sub: ['รายเดือน', 'รายปี'] },
   { href: '/income', label: 'รายรับ', icon: 'ti-arrow-up', sub: ['รายเดือน', 'รายปี'] },
   { href: '/expense', label: 'รายจ่าย', icon: 'ti-arrow-down', sub: ['รายเดือน', 'รายปี'] },
@@ -206,10 +210,12 @@ export default function Sidebar() {
 
   const renderGroup = (n: NavGroup) => {
     const active = pathname === n.href;
-    const hasSub = !!n.sub;
+    const linkActive = n.links?.some((l) => l.href === pathname) ?? false;
+    const open = active || linkActive;
+    const hasSub = !!n.sub || !!n.links;
     return (
       <div key={n.href}>
-        <Link href={n.href} className={`sbi ${active ? 'active open' : ''}`}>
+        <Link href={n.href} className={`sbi ${open ? 'open' : ''} ${active ? 'active' : ''}`}>
           <div className="sbi-left">
             <i className={`ti ${n.icon}`} />
             <span>{n.label}</span>
@@ -217,8 +223,8 @@ export default function Sidebar() {
           {hasSub && <i className="ti ti-chevron-right sbi-arrow" />}
         </Link>
         {hasSub && (
-          <div className={`sub-menu ${active ? 'open' : ''}`}>
-            {n.sub!.map((label) => {
+          <div className={`sub-menu ${open ? 'open' : ''}`}>
+            {n.sub?.map((label) => {
               const v = label === 'รายเดือน' ? 'month' : 'year';
               const isActive = view === v && active;
               return (
@@ -231,6 +237,16 @@ export default function Sidebar() {
                 </div>
               );
             })}
+            {n.links?.map((l) => (
+              <Link
+                key={l.href}
+                href={l.href}
+                className={`sub-item ${pathname === l.href ? 'active' : ''}`}
+                style={{ textDecoration: 'none' }}
+              >
+                {l.label}
+              </Link>
+            ))}
           </div>
         )}
       </div>
