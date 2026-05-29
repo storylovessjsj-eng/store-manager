@@ -29,13 +29,15 @@ export default function RecordPage() {
   const entries = allEntries.filter((e) => matches(e.date));
   const [viewImg, setViewImg] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+  const [editing, setEditing] = useState<Entry | null>(null);
   const fileInput = useRef<HTMLInputElement>(null);
 
   useEffect(() => { load(); }, []);
   useRealtimeRefresh(['sales', 'expenses'], () => load());
   useEffect(() => {
+    if (editing) return;
     setCat(type === 'income' ? INCOME_CATEGORIES[0] : EXPENSE_CATEGORIES[0]);
-  }, [type]);
+  }, [type, editing]);
 
   async function load() {
     const [{ data: sales }, { data: expenses }] = await Promise.all([
@@ -95,6 +97,27 @@ export default function RecordPage() {
     if (fileInput.current) fileInput.current.value = '';
   }
 
+  function resetForm() {
+    setEditing(null);
+    setDesc('');
+    setAmt('');
+    setDate(todayISO());
+    setCat(type === 'income' ? INCOME_CATEGORIES[0] : EXPENSE_CATEGORIES[0]);
+    clearImg();
+  }
+
+  function openEdit(e: Entry) {
+    setEditing(e);
+    setType(e.type);
+    setDesc(e.desc);
+    setAmt(String(e.amt));
+    setCat(e.cat);
+    setDate(e.date);
+    setImg(e.image_url);
+    if (fileInput.current) fileInput.current.value = '';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
   async function save() {
     const a = parseFloat(amt);
     if (!desc.trim() || !a || a <= 0 || !date) {
@@ -102,7 +125,25 @@ export default function RecordPage() {
       return;
     }
     setSaving(true);
-    if (type === 'income') {
+    if (editing) {
+      if (editing.type === 'income') {
+        await supabase.from('sales').update({
+          date,
+          total: a,
+          description: desc.trim(),
+          category: cat,
+          image_url: img,
+        }).eq('id', editing.id);
+      } else {
+        await supabase.from('expenses').update({
+          date,
+          amount: a,
+          category: cat,
+          description: desc.trim(),
+          image_url: img,
+        }).eq('id', editing.id);
+      }
+    } else if (type === 'income') {
       await supabase.from('sales').insert({
         date,
         total: a,
@@ -120,9 +161,7 @@ export default function RecordPage() {
       });
     }
     setSaving(false);
-    setDesc('');
-    setAmt('');
-    clearImg();
+    resetForm();
     load();
   }
 
@@ -130,6 +169,7 @@ export default function RecordPage() {
     if (!(await confirmDialog('ลบรายการนี้?'))) return;
     if (e.type === 'income') await supabase.from('sales').delete().eq('id', e.id);
     else await supabase.from('expenses').delete().eq('id', e.id);
+    if (editing && editing.id === e.id && editing.type === e.type) resetForm();
     load();
   }
 
@@ -138,18 +178,24 @@ export default function RecordPage() {
   return (
     <div className="page active">
       <div className="card" style={{ marginBottom: 10 }}>
-        <div className="card-title" style={{ marginBottom: 10 }}>บันทึกรายการใหม่</div>
+        <div className="card-title" style={{ marginBottom: 10 }}>
+          {editing ? `แก้ไข${editing.type === 'income' ? 'รายรับ' : 'รายจ่าย'}` : 'บันทึกรายการใหม่'}
+        </div>
 
         <div className="type-toggle">
           <button
             className={`tbtn ${type === 'income' ? 'si' : ''}`}
-            onClick={() => setType('income')}
+            onClick={() => !editing && setType('income')}
+            disabled={!!editing}
+            style={editing ? { opacity: 0.5, cursor: 'not-allowed' } : undefined}
           >
             <i className="ti ti-arrow-up" style={{ fontSize: 11 }} /> รายรับ
           </button>
           <button
             className={`tbtn ${type === 'expense' ? 'se' : ''}`}
-            onClick={() => setType('expense')}
+            onClick={() => !editing && setType('expense')}
+            disabled={!!editing}
+            style={editing ? { opacity: 0.5, cursor: 'not-allowed' } : undefined}
           >
             <i className="ti ti-arrow-down" style={{ fontSize: 11 }} /> รายจ่าย
           </button>
@@ -212,14 +258,25 @@ export default function RecordPage() {
           </div>
         </div>
 
-        <button
-          className={type === 'income' ? 'btn-i' : 'btn-e'}
-          onClick={save}
-          disabled={saving}
-          style={{ marginTop: 4, opacity: saving ? 0.6 : 1 }}
-        >
-          {saving ? 'กำลังบันทึก...' : `บันทึก${type === 'income' ? 'รายรับ' : 'รายจ่าย'}`}
-        </button>
+        <div style={{ display: 'flex', gap: 8, marginTop: 4 }}>
+          <button
+            className={type === 'income' ? 'btn-i' : 'btn-e'}
+            onClick={save}
+            disabled={saving}
+            style={{ opacity: saving ? 0.6 : 1, flex: 1 }}
+          >
+            {saving
+              ? 'กำลังบันทึก...'
+              : editing
+                ? 'บันทึกการแก้ไข'
+                : `บันทึก${type === 'income' ? 'รายรับ' : 'รายจ่าย'}`}
+          </button>
+          {editing && (
+            <button className="tbtn" onClick={resetForm} disabled={saving}>
+              ยกเลิก
+            </button>
+          )}
+        </div>
       </div>
 
       <div className="card">
@@ -259,9 +316,14 @@ export default function RecordPage() {
               <div><span className="ei-cat"><CategoryIcon category={e.cat} />{cleanCategoryLabel(e.cat)}</span></div>
               <div className="ei-date">{e.date.slice(5).replace('-', '/')}</div>
               <div className={`ei-amt ${e.type === 'income' ? 'ei-ai' : 'ei-ae'}`}>{formatTHB(e.amt)}</div>
-              <button className="ei-del" onClick={() => del(e)} aria-label="ลบ">
-                <i className="ti ti-trash" style={{ fontSize: 11 }} />
-              </button>
+              <div style={{ display: 'flex', gap: 2 }}>
+                <button className="ei-del" onClick={() => openEdit(e)} title="แก้ไข" aria-label="แก้ไข">
+                  <i className="ti ti-pencil" style={{ fontSize: 11 }} />
+                </button>
+                <button className="ei-del" onClick={() => del(e)} title="ลบ" aria-label="ลบ">
+                  <i className="ti ti-trash" style={{ fontSize: 11 }} />
+                </button>
+              </div>
             </div>
           ))}
         </div>
