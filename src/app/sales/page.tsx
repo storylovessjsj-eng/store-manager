@@ -313,10 +313,10 @@ export default function RecordPage() {
                 )}
                 {e.desc}
               </div>
-              <div><span className="ei-cat"><CategoryIcon category={e.cat} />{cleanCategoryLabel(e.cat)}</span></div>
+              <div className="ei-cat-cell"><span className="ei-cat"><CategoryIcon category={e.cat} />{cleanCategoryLabel(e.cat)}</span></div>
               <div className="ei-date">{e.date.slice(5).replace('-', '/')}</div>
               <div className={`ei-amt ${e.type === 'income' ? 'ei-ai' : 'ei-ae'}`}>{formatTHB(e.amt)}</div>
-              <div style={{ display: 'flex', gap: 2 }}>
+              <div className="ei-actions">
                 <button className="ei-del" onClick={() => openEdit(e)} title="แก้ไข" aria-label="แก้ไข">
                   <i className="ti ti-pencil" style={{ fontSize: 11 }} />
                 </button>

@@ -79,6 +79,7 @@ html,body{height:100%;margin:0;padding:0}body{font-size:13px;background:#f0f2f5}
 .ei-ai{color:#1D9E75}.ei-ae{color:#E24B4A}
 .ei-del{display:flex;align-items:center;justify-content:center;color:#c5ccd6;cursor:pointer;padding:0;border:none;background:transparent;border-radius:5px;font-size:13px;height:24px;width:24px}
 .ei-del:hover{background:#f0f2f5;color:#8a9ab5}
+.ei-actions{display:flex;gap:2px;justify-content:flex-end;align-items:center}
 .empty{text-align:center;padding:2rem;font-size:12px;color:#a0aec0}
 .type-toggle{display:flex;gap:6px;margin-bottom:10px}
 .tbtn{padding:5px 14px;border-radius:6px;font-size:12px;cursor:pointer;font-family:'Kanit',sans-serif;border:0.5px solid #dde1e7;background:#fff;color:#8a9ab5}
@@ -400,8 +401,10 @@ body{background:var(--th-bg)}
   .ef-grid{grid-template-columns:1fr}
   .ei-header{display:none}
   .ei{grid-template-columns:20px 1fr 80px;gap:4px}
-  .ei-cat,.ei-date{display:none}
+  .ei-cat,.ei-cat-cell,.ei-date{display:none}
   .ei-del{display:none}
+  .ei-actions{display:flex}
+  .ei-actions .ei-del{display:flex}
 
   .pf-card{max-width:100%}
   .sum-row2{grid-template-columns:1fr}
